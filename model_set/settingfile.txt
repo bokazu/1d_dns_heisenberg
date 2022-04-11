@@ -1,0 +1,5 @@
+2
+../sample/heisen_2site_nb.txt
+../model_set/j_set.txt
+n
+5
