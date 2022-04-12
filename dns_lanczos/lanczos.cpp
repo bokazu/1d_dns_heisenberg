@@ -86,7 +86,7 @@ void lanczos(int mat_dim, double *H, double *eigen_value,
 
     for (int k = 0; k < mat_dim; k++)
     {
-        cout << "count = " << k << endl;
+        // cout << "count = " << k << endl;
         if (k > 0) count++;
         vec_init(mat_dim, v);
         if (checker)

@@ -2,14 +2,11 @@
 
 using namespace std;
 
-void szz(int j, int site_num, int tot_site_num, int dim,
-         double *H,double *J)  // bra_iはsiteを変更するごとに手で変える必要あり
+void szz(int j, int site_num, int tot_site_num, int dim, double *H,
+         double *J)  // bra_iはsiteを変更するごとに手で変える必要あり
 {
-// cout << "/************************start szz***************************/"<<endl;
-// cout << "j = " << j << endl;
     // Point A2
     boost::dynamic_bitset<> ket_j(tot_site_num, j);
-    cout <<"ket_j = " << ket_j << endl;
     bool bit_check0, bit_check1;
 
     // Point B2
