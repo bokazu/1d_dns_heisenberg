@@ -96,9 +96,9 @@ void lanczos(int mat_dim, double *H, double *eigen_value,
             {
                 // calculate v[i] = Au0(k)
                 cblas_dgemv(CblasRowMajor, CblasNoTrans, mat_dim, mat_dim, 1.0,
-                            H, mat_dim, u[0], 1, 0.0, v, 1);
+                            H, mat_dim, u[1], 1, 0.0, v, 1);
                 // calculate alpha & beta
-                alpha[k] = cblas_ddot(mat_dim, v, 1, u[0], 1);
+                alpha[k] = cblas_ddot(mat_dim, v, 1, u[1], 1);
             }
             else
             {
