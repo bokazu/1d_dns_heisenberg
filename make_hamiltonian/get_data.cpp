@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void get_data(std::ifstream &M_H_Settingfile, int &tot_site_num,
+void get_data(std::ifstream &if_M_H_Settingfile, int &tot_site_num,
               std::string &M_H_OutputFile_name, std::string &M_H_JsetFile_name,
               std::string &D_L_OutputFile_name, std::string &Boundary_Condition,
               int &precision)
@@ -11,10 +11,10 @@ void get_data(std::ifstream &M_H_Settingfile, int &tot_site_num,
 
     int fcount = 0;
 
-    while (!M_H_Settingfile.eof())
+    while (!if_M_H_Settingfile.eof())
     {
         stringstream ss;
-        getline(M_H_Settingfile, ftmp);
+        getline(if_M_H_Settingfile, ftmp);
         ss << ftmp;
         // cout << "ftmp=" << ftmp << endl ;
         if (fcount == 0)
@@ -50,5 +50,5 @@ void get_data(std::ifstream &M_H_Settingfile, int &tot_site_num,
         }
         fcount += 1;
     }
-    M_H_Settingfile.close();
+    if_M_H_Settingfile.close();
 }

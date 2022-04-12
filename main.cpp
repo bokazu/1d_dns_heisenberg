@@ -16,16 +16,16 @@ int main()
     /***********************************************************INPUT
      * DATA*******************************************************/
     string M_H_settingfile_name = "./model_set/settingfile.txt";
-    ifstream M_H_Settingfile(M_H_settingfile_name);
-    if (!(M_H_Settingfile))
+    ifstream if_M_H_Settingfile(M_H_settingfile_name);
+    if (!(if_M_H_Settingfile))
     {
-        cerr << "Could not open the file(line 10) - '" << M_H_settingfile_name
-             << "'" << endl;
+        cerr << "Could not open the file" << M_H_settingfile_name << "'"
+             << endl;
     }
 
     string M_H_OutputFile_name, M_H_JsetFile_name, Boundary_Condition,
         D_L_OutputFile_name;
-    get_data(M_H_Settingfile, tot_site_num, M_H_OutputFile_name,
+    get_data(if_M_H_Settingfile, tot_site_num, M_H_OutputFile_name,
              M_H_JsetFile_name, D_L_OutputFile_name, Boundary_Condition,
              precision);
 

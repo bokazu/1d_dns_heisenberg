@@ -12,11 +12,11 @@ void make_hamiltonian(int mat_dim, int tot_site_num,
 
     /*jset.txtからのbondごとの相互作用情報の取得*/
     /*bond数の取得*/
-    ifstream M_H_JsetFile(M_H_JsetFile_name);
-    if (!(M_H_JsetFile))
+    ifstream if_M_H_JsetFile(M_H_JsetFile_name);
+    if (!(if_M_H_JsetFile))
     {
-        cerr << "Could not open the file(line 10) - '" << M_H_JsetFile_name
-             << "'" << endl;
+        cerr << "Could not open the file - '" << M_H_JsetFile_name << "'"
+             << endl;
     }
     if (Boundary_Condition == "y")
     {
@@ -36,11 +36,11 @@ void make_hamiltonian(int mat_dim, int tot_site_num,
     for (int i = 0; i < bond_num; i++)
     {
         J[i] = 0.;
-        M_H_JsetFile >> J[i];
+        if_M_H_JsetFile >> J[i];
         std::cout << i << "   " << i + 1 << "  :  " << J[i] << endl;
     }
 
-    M_H_JsetFile.close();
+    if_M_H_JsetFile.close();
 
     if (Boundary_Condition == "y")
     {
