@@ -2,14 +2,53 @@
 
 using namespace std;
 
-void get_data(int tot_sitenum,int bond_num,std::string M_H_OutputFile_name){
-    string M_H_settingfile_name =
-        "../model_set/settingfile.txt";  //系のsite数、output用ファイル名の情報をこのfileに書いておく
-    string M_H_jsetFile_name;
+void get_data(std::ifstream &M_H_Settingfile, int &tot_site_num,
+              std::string &M_H_OutputFile_name, std::string &M_H_JsetFile_name,
+              std::string &D_L_OutputFile_name, std::string &Boundary_Condition,
+              int &precision)
+{
+    string ftmp;
 
-    ifstream M_H_Settingfile(M_H_settingfile_name);
-
-    string ftmp, Boundary_Condition;
-    stringstream ss;
     int fcount = 0;
+
+    while (!M_H_Settingfile.eof())
+    {
+        stringstream ss;
+        getline(M_H_Settingfile, ftmp);
+        ss << ftmp;
+        // cout << "ftmp=" << ftmp << endl ;
+        if (fcount == 0)
+        {
+            ss >> tot_site_num;
+            // std::cout << "tot_site_num=" << tot_site_num << endl;
+        }
+        else if (fcount == 1)
+        {
+            M_H_OutputFile_name = ftmp;
+            // std::cout << "M_H_OutputFile_name = " << M_H_OutputFile_name <<
+            // endl;
+        }
+        else if (fcount == 2)
+        {
+            M_H_JsetFile_name = ftmp;
+            // std::cout << "M_H_JsetFile_name : " << M_H_JsetFile_name << endl;
+        }
+        else if (fcount == 3)
+        {
+            D_L_OutputFile_name = ftmp;
+        }
+        else if (fcount == 4)
+        {
+            Boundary_Condition = ftmp;
+            // std::cout << "Boundary Condition : " << Boundary_Condition <<
+            // endl;
+        }
+        else if (fcount == 5)
+        {
+            ss >> precision;
+            // std::cout << "precision = " << precision << endl;
+        }
+        fcount += 1;
+    }
+    M_H_Settingfile.close();
 }

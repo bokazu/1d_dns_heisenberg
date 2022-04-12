@@ -1,34 +1,42 @@
 #ifndef __MYlIB_H_
 #define __MYlIB_H_
 
+#include <boost/dynamic_bitset.hpp>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <random>
 #include <sstream>
-#include <boost/dynamic_bitset.hpp>
 
 #include "cblas.h"
 #include "lapacke.h"
 
-
 /*make_hamiltonian*/
-void make_hamiltonian(double *H);
-void spm(int j, int site_num, int tot_site_num, int dim, double* H,double *J);
-void smp(int j, int site_num, int tot_site_num, int dim, double* H,double *J);
-void szz(int j, int site_num, int tot_site_num, int dim, double* H,double *J);
-
+void get_data(std::ifstream &M_H_Settingfile, int &tot_site_num,
+              std::string &M_H_OutputFile_name, std::string &M_H_JsetFile_name,
+              std::string &D_L_OutputFile_name, std::string &Boundary_Condition,
+              int &precision);
+void make_hamiltonian(int mat_dim, int tot_site_num,
+                      std::string M_H_JsetFile_name,
+                      std::string M_H_OutputFile_name, int precision,
+                      std::string Boundary_Condition, double *H);
+void spm(int j, int site_num, int tot_site_num, int dim, double *H, double *J);
+void smp(int j, int site_num, int tot_site_num, int dim, double *H, double *J);
+void szz(int j, int site_num, int tot_site_num, int dim, double *H, double *J);
 
 /*dns_lanczos*/
-
+void lanczos(int mat_dim, double *H, double *eigen_value,
+             std::string D_L_OutputFile_name, int precision);
+int sdz(int n, double err, double *v);
+void gso(int n, int k, double **u);
 
 /*m_hとdns_lanczosに共通な関数*/
-void vec_init(int n,double* vec);
-void vec_init(int n,int* vec);
+void vec_init(int n, double *vec);
+void vec_init(int n, int *vec);
 
 /*行列出力用の関数テンプレート*/
 template <typename T>
-void printmat(int mat_dim, int precision,T *A)
+void printmat(int mat_dim, int precision, T *A)
 {
     T mtmp;
     for (int row_num = 0; row_num < mat_dim; row_num++)
@@ -37,7 +45,8 @@ void printmat(int mat_dim, int precision,T *A)
         for (int col_num = 0; col_num < mat_dim; col_num++)
         {
             mtmp = A[col_num + mat_dim * row_num];
-           std::cout << std::scientific << std::setprecision(precision) << mtmp;
+            std::cout << std::scientific << std::setprecision(precision)
+                      << mtmp;
             if (col_num < mat_dim - 1)
             {
                 std::cout << "  ";
@@ -55,7 +64,6 @@ void printmat(int mat_dim, int precision,T *A)
     std::cout << "]" << std::endl;
 }
 
-
 template <typename T>
 void fprintmat(std::ofstream &file, int mat_dim, int precision, T *A)
 {
@@ -66,7 +74,8 @@ void fprintmat(std::ofstream &file, int mat_dim, int precision, T *A)
         for (int col_num = 0; col_num < mat_dim; col_num++)
         {
             mtmp = A[col_num + mat_dim * row_num];
-            file << std::setw(5) << std::setprecision(precision) << std::left << mtmp;
+            file << std::setw(5) << std::setprecision(precision) << std::left
+                 << mtmp;
             if (col_num < mat_dim - 1)
             {
                 file << "  ";
@@ -88,7 +97,8 @@ void printvec(int vec_elements, int precision, T *v)
     for (int col_num = 0; col_num < vec_elements; col_num++)
     {
         vtmp = v[col_num];
-        std::cout << std::setw(7) << std::scientific << std::setprecision(precision) << std::left << vtmp;
+        std::cout << std::setw(7) << std::scientific
+                  << std::setprecision(precision) << std::left << vtmp;
         if (col_num < vec_elements - 1)
         {
             std::cout << "  ";
@@ -98,9 +108,8 @@ void printvec(int vec_elements, int precision, T *v)
 }
 
 template <typename T>
-void fprintvec(std::ofstream &file, int vec_elements, int precision,T *v)
+void fprintvec(std::ofstream &file, int vec_elements, int precision, T *v)
 {
-    
     T vtmp;
     for (int col_num = 0; col_num < vec_elements; col_num++)
     {
@@ -111,23 +120,24 @@ void fprintvec(std::ofstream &file, int vec_elements, int precision,T *v)
             file << "  ";
         }
     }
-   file << "\n" << std::endl;
+    file << "\n" << std::endl;
 }
 
 /*ベクトルを列ベクトル表示する*/
 template <typename T>
-void fprintvec_col(std::ofstream &file, int vec_elements,int precision, T *v)
+void fprintvec_col(std::ofstream &file, int vec_elements, int precision, T *v)
 {
     T vtmp;
     for (int col_num = 0; col_num < vec_elements; col_num++)
     {
         vtmp = v[col_num];
-        file << std::setw(17) << std::setprecision(precision) << vtmp << std::endl;
+        file << std::setw(17) << std::setprecision(precision) << vtmp
+             << std::endl;
     }
 }
 
 template <typename T>
-void print2dvec(int vec_elements, int precision,T **C)
+void print2dvec(int vec_elements, int precision, T **C)
 {
     T vtmp;
     for (int row_num = 0; row_num < vec_elements; row_num++)
@@ -136,7 +146,8 @@ void print2dvec(int vec_elements, int precision,T **C)
         for (int col_num = 0; col_num < vec_elements; col_num++)
         {
             vtmp = C[row_num][col_num];
-            std::cout << std::setw(7) << std::scientific << std::setprecision(precision) << std::left << vtmp;
+            std::cout << std::setw(7) << std::scientific
+                      << std::setprecision(precision) << std::left << vtmp;
             if (col_num < vec_elements - 1)
             {
                 std::cout << "  ";
@@ -164,10 +175,11 @@ void fprint2dvec(std::ofstream &file, int vec_elements, int precision, T **C)
         for (int col_num = 0; col_num < vec_elements; col_num++)
         {
             vtmp = C[row_num][col_num];
-            file << std::setw(17) << std::scientific << std::setprecision(precision) << std::left << vtmp;
+            file << std::setw(17) << std::scientific
+                 << std::setprecision(precision) << std::left << vtmp;
             if (col_num < vec_elements - 1)
             {
-               file << "  ";
+                file << "  ";
             }
         }
         if (row_num < vec_elements - 1)
@@ -183,37 +195,43 @@ void fprint2dvec(std::ofstream &file, int vec_elements, int precision, T **C)
 }
 
 template <typename T>
-void print_tri_diag_vec(int mat_dim, int precision,T *diag, T *sub_diag)
+void print_tri_diag_vec(int mat_dim, int precision, T *diag, T *sub_diag)
 {
     T dtmp, subdtmp;
     for (int i = 0; i < mat_dim; i++)
     {
         for (int j = 0; j <= i - 2; j++)
         {
-            std::cout << std::setw(7) << std::scientific << std::setprecision(precision) << std::left << 0.0
-                 << "  ";
+            std::cout << std::setw(7) << std::scientific
+                      << std::setprecision(precision) << std::left << 0.0
+                      << "  ";
         }
         if (i == 0)
         {
-            std::cout << std::setw(7) << std::scientific << std::setprecision(precision) << std::left << diag[i]
-                 << "  " << sub_diag[i] << "  ";
+            std::cout << std::setw(7) << std::scientific
+                      << std::setprecision(precision) << std::left << diag[i]
+                      << "  " << sub_diag[i] << "  ";
         }
         else if (i == mat_dim - 1)
         {
-            std::cout << std::setw(7) << std::scientific << std::setprecision(precision) << std::left << sub_diag[i]
-                 << "  " << diag[i] << "  ";
+            std::cout << std::setw(7) << std::scientific
+                      << std::setprecision(precision) << std::left
+                      << sub_diag[i] << "  " << diag[i] << "  ";
         }
         else
         {
-            std::cout << std::setw(7) << std::scientific << std::setprecision(precision) << std::left << sub_diag[i]
-                 << "  " << diag[i] << "  " << sub_diag[i] << "  ";
+            std::cout << std::setw(7) << std::scientific
+                      << std::setprecision(precision) << std::left
+                      << sub_diag[i] << "  " << diag[i] << "  " << sub_diag[i]
+                      << "  ";
         }
         for (int k = i + 2; k < mat_dim; k++)
         {
             if (k > 0)
             {
-                std::cout << std::setw(7) << std::scientific << std::setprecision(precision) << std::left << 0.0
-                     << "  ";
+                std::cout << std::setw(7) << std::scientific
+                          << std::setprecision(precision) << std::left << 0.0
+                          << "  ";
             }
         }
         std::cout << std::endl;
@@ -221,36 +239,41 @@ void print_tri_diag_vec(int mat_dim, int precision,T *diag, T *sub_diag)
 }
 
 template <typename T>
-void fprint_tri_diag_vec(std::ofstream &file, int mat_dim, int precision,T *diag, T *sub_diag)
+void fprint_tri_diag_vec(std::ofstream &file, int mat_dim, int precision,
+                         T *diag, T *sub_diag)
 {
     T dtmp, subdtmp;
     for (int i = 0; i < mat_dim; i++)
     {
         for (int j = 0; j <= i - 2; j++)
         {
-            file << std::setw(7) << std::scientific << std::setprecision(precision) << std::left << 0.0
-                 << "  ";
+            file << std::setw(7) << std::scientific
+                 << std::setprecision(precision) << std::left << 0.0 << "  ";
         }
         if (i == 0)
         {
-            file << std::setw(7) << std::scientific << std::setprecision(precision) << std::left << diag[i]
-                 << "  " << sub_diag[i] << "  ";
+            file << std::setw(7) << std::scientific
+                 << std::setprecision(precision) << std::left << diag[i] << "  "
+                 << sub_diag[i] << "  ";
         }
         else if (i == mat_dim - 1)
         {
-            file << std::setw(7) << std::scientific << std::setprecision(precision) << std::left
-                 << sub_diag[i - 1] << "  " << diag[i] << "  ";
+            file << std::setw(7) << std::scientific
+                 << std::setprecision(precision) << std::left << sub_diag[i - 1]
+                 << "  " << diag[i] << "  ";
         }
         else
         {
-            file << std::setw(7) << std::scientific << std::setprecision(precision) << std::left
-                 << sub_diag[i - 1] << "  " << diag[i] << "  " << sub_diag[i] << "  ";
+            file << std::setw(7) << std::scientific
+                 << std::setprecision(precision) << std::left << sub_diag[i - 1]
+                 << "  " << diag[i] << "  " << sub_diag[i] << "  ";
         }
         for (int k = i + 2; k < mat_dim; k++)
         {
             if (k > 0)
             {
-                file << std::setw(7) << std::scientific << std::setprecision(precision) << std::left << 0.0
+                file << std::setw(7) << std::scientific
+                     << std::setprecision(precision) << std::left << 0.0
                      << "  ";
             }
         }

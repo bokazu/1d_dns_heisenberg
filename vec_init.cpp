@@ -1,3 +1,7 @@
+#include "all.h"
+
+using namespace std;
+
 void vec_init(int n, double* vec)
 {
     for (int i = 0; i < n; i++)

@@ -6,6 +6,9 @@ using namespace std;
 void spm(int j, int site_num, int max_site_num, int dim,
          double *H,double *J)  // bra_iはsiteを変更するごとに手で変える必要あり
 {
+    // cout << "/************************start spm***************************/"<<endl;
+    // cout << "max_site_num =" << max_site_num << endl;
+    // cout << "mat_dim      = " << dim << endl; 
     boost::dynamic_bitset<> ket_j(max_site_num, j);
     boost::dynamic_bitset<> ket_j1(max_site_num, j);
     bool bit_check0, bit_check1;
