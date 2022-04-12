@@ -8,6 +8,7 @@ lapack_int LAPACKE_dstev(int matrix_order, char jobz, lapack_int n, double *d,
 void lanczos(int mat_dim, double *H, double *eigen_value,
              std::string D_L_OutputFile_name, int precision)
 {
+    /**branch*/
     std::cout << "/************************************************************"
                  "***************************"
               << "Lanczos Method"
